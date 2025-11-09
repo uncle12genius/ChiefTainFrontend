@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Order, OrderStatus, ShippingAddress } from '../types/order.types';
+import type { Order, OrderStatus, ShippingAddress } from '../types/order.types';
 
 interface CreateOrderRequest {
   shippingAddress: ShippingAddress;

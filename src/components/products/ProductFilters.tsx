@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Category } from '../../types/product.types';
-import { ProductFilter } from '../../types/product.types';
+import type { Category } from '../../types/product.types';
+import type { ProductFilter } from '../../types/product.types';
 
 interface ProductFiltersProps {
   categories: Category[];

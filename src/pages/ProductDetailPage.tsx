@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Product, Review } from '../types/product.types';
+import type { Product, Review } from '../types/product.types';
 import { productService } from '../services/productServices';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';

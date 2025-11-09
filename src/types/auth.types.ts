@@ -1,4 +1,4 @@
-import { User } from './common.types';
+import type { User } from '../types/common.types';
 
 export interface LoginCredentials {
   email: string;

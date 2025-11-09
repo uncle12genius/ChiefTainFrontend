@@ -1,6 +1,6 @@
 import { api } from './api';
-import { Product, Category, ProductFilter } from '../types/product.types';
-import { ApiResponse, PaginationParams } from '../types/common.types';
+import type { Product, Category, ProductFilter } from '../types/product.types';
+import type { ApiResponse, PaginationParams } from '../types/common.types';
 
 interface ProductResponse {
   products: Product[];

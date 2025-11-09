@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { CartContextType, Cart, CartItem } from '../types/cart.types';
+import type{ CartContextType, Cart, CartItem } from '../types/cart.types';
 import { useAuth } from './AuthContext';
-import { cartService } from '../services/cartService';
+import type { cartService } from '../services/cartService';
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 

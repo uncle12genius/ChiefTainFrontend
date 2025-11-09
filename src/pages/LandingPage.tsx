@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Product } from '../types/product.types';
-import { productService } from '../services/productService';
+import type { Product } from '../types/product.types';
+import { productService } from '../services/productServices';
 import ProductCard from '../components/products/ProductCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 

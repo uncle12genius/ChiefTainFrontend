@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CartItem as CartItemType } from '../../types/cart.types';
+import  type { CartItem as CartItemType } from '../../types/cart.types';
 import { useCart } from '../../context/CartContext';
 import QuantityAdjuster from './QuantityAdjuster';
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Review } from '../../types/product.types';
+import type { Review } from '../../types/product.types';
 import Button from '../common/Button';
 
 interface ReviewSectionProps {

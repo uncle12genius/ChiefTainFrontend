@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { SignupCredentials } from '../types/auth.types';
+import  type { SignupCredentials } from '../types/auth.types';
 import Button from '../components/common/Button';
 
 const SignupPage: React.FC = () => {

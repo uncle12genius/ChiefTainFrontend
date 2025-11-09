@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Product, ProductFilter, Category } from '../types/product.types';
-import { productService } from '../services/productService';
+import type { Product, ProductFilter, Category } from '../types/product.types';
+import { productService } from '../services/productServices';
 import ProductCard from '../components/products/ProductCard';
 import ProductFilters from '../components/products/ProductFilters';
 import LoadingSpinner from '../components/common/LoadingSpinner';

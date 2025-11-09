@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Product } from '../../../types/product.types';
-import { productService } from '../../../services/productService';
+import type{ Product } from '../../../types/product.types';
+import { productService } from '../../../services/productServices';
 import Button from '../../common/Button';
 import LoadingSpinner from '../../common/LoadingSpinner';
 

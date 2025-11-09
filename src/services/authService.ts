@@ -1,6 +1,6 @@
 import { api } from './api';
-import { LoginCredentials, SignupCredentials } from '../types/auth.types';
-import { User } from '../types/common.types';
+import type { LoginCredentials, SignupCredentials } from '../types/auth.types';
+import type { User } from '../types/common.types';
 
 interface AuthResponse {
   token: string;

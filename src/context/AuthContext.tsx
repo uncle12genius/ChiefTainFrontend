@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { AuthContextType, AuthState, LoginCredentials, SignupCredentials } from '../types/auth.types';
-import { User } from '../types/common.types';
-import { authService } from '../services/authService';
+import type{ AuthContextType, AuthState, LoginCredentials, SignupCredentials } from '../types/auth.types';
+import type { User } from '../types/common.types';
+import type{ authService } from '../services/authService';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

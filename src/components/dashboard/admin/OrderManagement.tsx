@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Order, OrderStatus } from '../../../types/order.types';
+import  type { Order, OrderStatus } from '../../../types/order.types';
 import { orderService } from '../../../services/orderService';
 import LoadingSpinner from '../../common/LoadingSpinner';
 
