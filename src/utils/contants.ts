@@ -1,4 +1,11 @@
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+import env from '../config/env';
+
+export const API_BASE_URL = env.apiUrl;
+export const APP_NAME = env.appName;
+export const APP_VERSION = env.version;
+export const DEFAULT_CURRENCY = env.defaultCurrency;
+export const DEFAULT_COUNTRY = env.defaultCountry;
+export const MAX_UPLOAD_SIZE = 10485760; // 10MB
 
 export const BRAND_COLORS = {
   primary: '#FF6B35',

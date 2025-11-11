@@ -1,10 +1,12 @@
 import axios from 'axios';
 
-// Use Vite env variable if you plan to add one later, else fallback to localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+// Temporary hardcoded values for development
+const API_BASE_URL = 'http://localhost:8080/api';
+const API_TIMEOUT = 10000;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -19,7 +21,9 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 // Response interceptor to handle errors
