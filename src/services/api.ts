@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Temporary hardcoded values for development
-const API_BASE_URL = 'http://localhost:8080/api';
+
+const API_BASE_URL = 'http://localhost:8080';
 const API_TIMEOUT = 10000;
 
 export const api = axios.create({
@@ -12,7 +12,7 @@ export const api = axios.create({
   },
 });
 
-// Request interceptor to add auth token
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');

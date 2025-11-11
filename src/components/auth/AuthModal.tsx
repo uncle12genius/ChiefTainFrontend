@@ -78,22 +78,8 @@ const AuthModal: React.FC<AuthModalProps> = ({
           </p>
         </div>
 
-        {/* Demo Credentials */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-900 mb-2">Demo Credentials</h4>
-          <div className="grid grid-cols-2 gap-3 text-xs">
-            <div className="text-left">
-              <strong>User:</strong><br />
-              user@example.com<br />
-              password123
-            </div>
-            <div className="text-left">
-              <strong>Admin:</strong><br />
-              admin@example.com<br />
-              admin123
-            </div>
-          </div>
-        </div>
+            
+       
       </div>
     </Modal>
   );

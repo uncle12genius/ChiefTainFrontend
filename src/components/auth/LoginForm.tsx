@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { LoginCredentials } from '../../types/auth.types';
+import type{ LoginCredentials } from '../../types/auth.types';
 import Button from '../common/Button';
 
 interface LoginFormProps {
@@ -42,12 +42,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const fillDemoCredentials = (role: 'user' | 'admin') => {
     if (role === 'user') {
       setCredentials({
-        email: 'user@example.com',
+        email: 'user@chieftain.com',
         password: 'password123',
       });
     } else {
       setCredentials({
-        email: 'admin@example.com',
+        email: 'admin@chieftain.com',
         password: 'admin123',
       });
     }

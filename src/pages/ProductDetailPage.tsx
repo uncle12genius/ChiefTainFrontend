@@ -9,27 +9,46 @@ import Button from '../components/common/Button';
 import ReviewSection from '../components/products/ReviewSection';
 
 const ProductDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  // Router + context hooks (always called)
+  const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { addToCart } = useCart();
-  
+
+  // State hooks (always called)
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
+  // Derived values that do not call hooks — safe to compute early using optional chaining
+  const stockNum = Number(product?.stock ?? 0);
+  const maxSelectable = stockNum > 0 ? Math.min(stockNum, 10) : 1;
+
+  // Always-registered hook: keep this near top so hook order doesn't change
+  useEffect(() => {
+    // clamp quantity whenever stock or maxSelectable changes
+    setQuantity((q) => {
+      if (stockNum === 0) return 1;
+      return Math.min(q, maxSelectable);
+    });
+    // intentionally dependent on stockNum and maxSelectable
+  }, [stockNum, maxSelectable]);
+
+  // Data fetching effect (always registered)
   useEffect(() => {
     const fetchProductData = async () => {
-      if (!id) return;
+      if (!id) {
+        navigate('/products');
+        return;
+      }
 
       try {
         setLoading(true);
         const productData = await productService.getProduct(id);
-        setProduct(productData);
-        // In a real app, you'd fetch reviews separately
-        setReviews([]); // Placeholder for reviews
+        setProduct(productData ?? null);
+        setReviews([]); // placeholder: fetch real reviews separately
       } catch (error) {
         console.error('Error fetching product:', error);
         navigate('/products');
@@ -41,6 +60,7 @@ const ProductDetailPage: React.FC = () => {
     fetchProductData();
   }, [id, navigate]);
 
+  // Handlers (use state/hooks above — no hooks inside handlers)
   const handleAddToCart = async () => {
     if (!product) return;
 
@@ -52,7 +72,6 @@ const ProductDetailPage: React.FC = () => {
     try {
       setAddingToCart(true);
       await addToCart(product.id, quantity);
-      // Show success message or notification
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {
@@ -65,6 +84,7 @@ const ProductDetailPage: React.FC = () => {
     navigate('/cart');
   };
 
+  // Loading / not found UI (hooks already called above — stable order)
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -78,13 +98,24 @@ const ProductDetailPage: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h2>
-          <Button onClick={() => navigate('/products')}>
-            Back to Products
-          </Button>
+          <Button onClick={() => navigate('/products')}>Back to Products</Button>
         </div>
       </div>
     );
   }
+
+  // Safe derived presentation values (product is non-null here)
+  const name = product.name ?? 'Unnamed product';
+  const imageUrl = product.imageUrl ?? '/api/placeholder/600/600';
+  const priceNum = product.price != null ? Number(product.price) : null;
+  const priceText = priceNum != null ? `KSh ${priceNum.toLocaleString()}` : 'KSh —';
+  const originalPriceNum = product.originalPrice != null ? Number(product.originalPrice) : null;
+  const ratingsNum = Number(product.ratings ?? 0);
+  const reviewCountNum = Number(product.reviewCount ?? 0);
+  const conditionText = (product.condition ?? '').toLowerCase() || 'n/a';
+  const brandText = product.brand ?? 'Unknown';
+  const categoryName = product.category?.name ?? 'Uncategorized';
+  const compatibility = Array.isArray(product.compatibility) ? product.compatibility : [];
 
   return (
     <div className="min-h-screen bg-white py-8">
@@ -93,19 +124,12 @@ const ProductDetailPage: React.FC = () => {
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-4">
             <li>
-              <button
-                onClick={() => navigate('/products')}
-                className="text-gray-400 hover:text-gray-500"
-              >
+              <button onClick={() => navigate('/products')} className="text-gray-400 hover:text-gray-500">
                 Products
               </button>
             </li>
             <li>
-              <svg
-                className="flex-shrink-0 h-5 w-5 text-gray-300"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
+              <svg className="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
@@ -114,7 +138,7 @@ const ProductDetailPage: React.FC = () => {
               </svg>
             </li>
             <li>
-              <span className="text-gray-500">{product.name}</span>
+              <span className="text-gray-500">{name}</span>
             </li>
           </ol>
         </nav>
@@ -123,28 +147,20 @@ const ProductDetailPage: React.FC = () => {
           {/* Image gallery */}
           <div className="flex flex-col-reverse">
             <div className="w-full aspect-w-1 aspect-h-1">
-              <img
-                src={product.imageUrl || '/api/placeholder/600/600'}
-                alt={product.name}
-                className="w-full h-full object-center object-cover sm:rounded-lg"
-              />
+              <img src={imageUrl} alt={name} className="w-full h-full object-center object-cover sm:rounded-lg" />
             </div>
           </div>
 
           {/* Product info */}
           <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
-            <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-              {product.name}
-            </h1>
+            <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">{name}</h1>
 
             <div className="mt-3">
               <h2 className="sr-only">Product information</h2>
               <div className="flex items-center space-x-4">
-                <p className="text-3xl text-gray-900">KSh {product.price.toLocaleString()}</p>
-                {product.originalPrice && product.originalPrice > product.price && (
-                  <p className="text-xl text-gray-500 line-through">
-                    KSh {product.originalPrice.toLocaleString()}
-                  </p>
+                <p className="text-3xl text-gray-900">{priceText}</p>
+                {originalPriceNum != null && originalPriceNum > (priceNum ?? 0) && (
+                  <p className="text-xl text-gray-500 line-through">KSh {originalPriceNum.toLocaleString()}</p>
                 )}
               </div>
             </div>
@@ -156,9 +172,7 @@ const ProductDetailPage: React.FC = () => {
                   {[0, 1, 2, 3, 4].map((rating) => (
                     <svg
                       key={rating}
-                      className={`h-5 w-5 flex-shrink-0 ${
-                        product.ratings > rating ? 'text-yellow-400' : 'text-gray-300'
-                      }`}
+                      className={`h-5 w-5 flex-shrink-0 ${ratingsNum > rating ? 'text-yellow-400' : 'text-gray-300'}`}
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -166,19 +180,15 @@ const ProductDetailPage: React.FC = () => {
                     </svg>
                   ))}
                 </div>
-                <p className="ml-2 text-sm text-gray-900">
-                  {product.ratings.toFixed(1)} out of 5 stars
-                </p>
+                <p className="ml-2 text-sm text-gray-900">{ratingsNum.toFixed(1)} out of 5 stars</p>
               </div>
-              <p className="mt-1 text-sm text-gray-500">
-                {product.reviewCount} reviews
-              </p>
+              <p className="mt-1 text-sm text-gray-500">{reviewCountNum} reviews</p>
             </div>
 
             <div className="mt-6">
               <h3 className="sr-only">Description</h3>
               <div className="text-base text-gray-700 space-y-6">
-                <p>{product.description}</p>
+                <p>{product.description ?? 'No description available.'}</p>
               </div>
             </div>
 
@@ -189,35 +199,33 @@ const ProductDetailPage: React.FC = () => {
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Brand</dt>
-                    <dd className="text-sm text-gray-900">{product.brand}</dd>
+                    <dd className="text-sm text-gray-900">{brandText}</dd>
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Condition</dt>
-                    <dd className="text-sm text-gray-900 capitalize">{product.condition.toLowerCase()}</dd>
+                    <dd className="text-sm text-gray-900 capitalize">{conditionText}</dd>
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Stock</dt>
-                    <dd className="text-sm text-gray-900">
-                      {product.stock > 0 ? `${product.stock} available` : 'Out of stock'}
-                    </dd>
+                    <dd className="text-sm text-gray-900">{stockNum > 0 ? `${stockNum} available` : 'Out of stock'}</dd>
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Category</dt>
-                    <dd className="text-sm text-gray-900">{product.category.name}</dd>
+                    <dd className="text-sm text-gray-900">{categoryName}</dd>
                   </div>
                 </dl>
               </div>
             </div>
 
             {/* Compatibility */}
-            {product.compatibility && product.compatibility.length > 0 && (
+            {compatibility.length > 0 && (
               <div className="mt-6">
                 <h3 className="text-sm font-medium text-gray-900">Compatible With</h3>
                 <div className="mt-2">
                   <div className="flex flex-wrap gap-2">
-                    {product.compatibility.map((model) => (
+                    {compatibility.map((model) => (
                       <span
-                        key={model}
+                        key={String(model)}
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800"
                       >
                         {model}
@@ -240,34 +248,22 @@ const ProductDetailPage: React.FC = () => {
                     value={quantity}
                     onChange={(e) => setQuantity(Number(e.target.value))}
                     className="max-w-full rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm"
+                    disabled={stockNum === 0}
                   >
-                    {Array.from({ length: Math.min(product.stock, 10) }, (_, i) => i + 1).map(
-                      (num) => (
-                        <option key={num} value={num}>
-                          {num}
-                        </option>
-                      )
-                    )}
+                    {Array.from({ length: maxSelectable }, (_, i) => i + 1).map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 <div className="flex space-x-4 flex-1">
-                  <Button
-                    onClick={handleAddToCart}
-                    loading={addingToCart}
-                    disabled={product.stock === 0}
-                    className="flex-1"
-                  >
-                    {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                  <Button onClick={handleAddToCart} loading={addingToCart} disabled={stockNum === 0} className="flex-1">
+                    {stockNum === 0 ? 'Out of Stock' : 'Add to Cart'}
                   </Button>
-                  
-                  <Button
-                    onClick={handleBuyNow}
-                    variant="secondary"
-                    loading={addingToCart}
-                    disabled={product.stock === 0}
-                    className="flex-1"
-                  >
+
+                  <Button onClick={handleBuyNow} variant="secondary" loading={addingToCart} disabled={stockNum === 0} className="flex-1">
                     Buy Now
                   </Button>
                 </div>

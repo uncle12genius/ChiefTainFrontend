@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { SignupCredentials } from '../../types/auth.types';
+import type{ SignupCredentials } from '../../types/auth.types';
 import Button from '../common/Button';
 
 interface SignupFormProps {

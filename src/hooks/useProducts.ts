@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Product, ProductFilter } from '../types/product.types';
-import { productService } from '../services/productService';
+import type { Product, ProductFilter } from '../types/product.types';
+import { productService } from '../services/productServices';
 
 export const useProducts = (filters: ProductFilter = {}, page = 1, pageSize = 12) => {
   const [products, setProducts] = useState<Product[]>([]);

@@ -10,6 +10,9 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  // defensive: if product is completely missing, don't render
+  if (!product) return null;
+
   const { addToCart } = useCart();
   const { user } = useAuth();
   const [addingToCart, setAddingToCart] = React.useState(false);
@@ -30,36 +33,46 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   };
 
+  // safe fallbacks
+  const name = product.name ?? 'Unnamed product';
+  const imageUrl = product.imageUrl ?? '/api/placeholder/400/400';
+  const conditionLabel = (product.condition ?? '').toLowerCase();
+  const brand = product.brand ?? '';
+  const ratingsNum = Number(product.ratings ?? 0);
+  const reviewCount = Number(product.reviewCount ?? 0);
+  const price = product.price ?? null;
+  const stock = Number(product.stock ?? 0);
+
   return (
     <Link to={`/products/${product.id}`} className="card group">
       <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-t-lg bg-gray-200">
         <img
-          src={product.imageUrl || '/api/placeholder/400/400'}
-          alt={product.name}
+          src={imageUrl}
+          alt={name}
           className="h-48 w-full object-cover object-center group-hover:opacity-75 transition-opacity"
         />
       </div>
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-sm font-medium text-gray-900 line-clamp-2 flex-1">
-            {product.name}
+            {name}
           </h3>
           <div className="ml-2 flex-shrink-0">
             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-              {product.condition.toLowerCase()}
+              {conditionLabel || 'n/a'}
             </span>
           </div>
         </div>
-        
-        <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
-        
+
+        <p className="text-sm text-gray-500 mb-2">{brand}</p>
+
         <div className="flex items-center mb-2">
           <div className="flex items-center">
             {[0, 1, 2, 3, 4].map((rating) => (
               <svg
                 key={rating}
                 className={`h-4 w-4 flex-shrink-0 ${
-                  product.ratings > rating ? 'text-yellow-400' : 'text-gray-300'
+                  ratingsNum > rating ? 'text-yellow-400' : 'text-gray-300'
                 }`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -69,16 +82,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             ))}
           </div>
           <p className="ml-1 text-sm text-gray-500">
-            {product.ratings.toFixed(1)} ({product.reviewCount})
+            {ratingsNum.toFixed(1)} ({reviewCount})
           </p>
         </div>
 
         <div className="flex items-center justify-between">
           <p className="text-lg font-semibold text-gray-900">
-            KSh {product.price.toLocaleString()}
+            {price != null ? `KSh ${Number(price).toLocaleString()}` : 'KSh —'}
           </p>
-          
-          {user && product.stock > 0 && (
+
+          {user && stock > 0 && (
             <Button
               size="sm"
               loading={addingToCart}
@@ -90,7 +103,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
         </div>
 
-        {product.stock === 0 && (
+        {stock === 0 && (
           <p className="text-sm text-red-600 mt-2">Out of Stock</p>
         )}
       </div>
