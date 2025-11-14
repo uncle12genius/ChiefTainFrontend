@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import type{ AuthContextType, AuthState, LoginCredentials, SignupCredentials } from '../types/auth.types';
-import type { User } from '../types/common.types';
-import type{ authService } from '../services/authService';
-
+import type { User } from '../types/common.types'
+import { authService } from '../services/authService';
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthAction {
@@ -62,7 +61,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (credentials: LoginCredentials) => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
+      console.log(credentials)
       const response = await authService.login(credentials);
+      console.log(response);
       localStorage.setItem('token', response.token);
       dispatch({ type: 'SET_USER', payload: response.user });
     } catch (error) {

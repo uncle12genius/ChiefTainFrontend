@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from '../common/Modal';
-import LoginForm from './LoginForm';
-import SignupForm from './SignupForm';
+import LoginPage from '../../pages/LoginPage';
+import  SignupPage from '../../pages/SignupPage';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -60,9 +60,9 @@ const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Form */}
         {mode === 'login' ? (
-          <LoginForm onSuccess={handleSuccess} />
+          <LoginPage onSuccess={handleSuccess} />
         ) : (
-          <SignupForm onSuccess={handleSuccess} />
+          <SignupPage onSuccess={handleSuccess} />
         )}
 
         {/* Switch Mode */}

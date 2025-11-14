@@ -83,11 +83,11 @@ const ProductCatalog: React.FC = () => {
                 {searchQuery ? `Search Results for "${searchQuery}"` : 'All Products'}
               </h1>
               <p className="text-gray-600">
-                {products.length} products found
+                {products?.length} products found
               </p>
             </div>
 
-            {products.length === 0 ? (
+            {products?.length === 0 ? (
               <div className="text-center py-12">
                 <svg
                   className="w-24 h-24 text-gray-300 mx-auto mb-4"
@@ -116,7 +116,7 @@ const ProductCatalog: React.FC = () => {
             ) : (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                  {products.map((product) => (
+                  {products?.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>

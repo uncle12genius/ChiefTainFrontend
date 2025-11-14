@@ -4,7 +4,7 @@ export interface User {
   firstName: string;
   lastName: string;
   role: 'USER' | 'ADMIN';
-  phone?: string;
+  phone: string;
   createdAt: string;
 }
 

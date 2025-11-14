@@ -9,17 +9,17 @@ interface AuthResponse {
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/auth/login', credentials);
+    const response = await api.post<AuthResponse>('auth/login', credentials);
     return response.data;
   },
 
   async signup(credentials: SignupCredentials): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/auth/signup', credentials);
+    const response = await api.post<AuthResponse>('auth/signup', credentials);
     return response.data;
   },
 
   async getCurrentUser(): Promise<User> {
-    const response = await api.get<User>('/auth/me');
+    const response = await api.get<User>('/auth/admin');
     return response.data;
   },
 
